@@ -5,7 +5,7 @@ import Navbar from '@/components/sections/Navbar';
 import Footer from '@/components/sections/Footer';
 
 // Container variants for staggered animations
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -17,17 +17,17 @@ const containerVariants = {
 };
 
 // Item variants for each content section
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
-  show: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { 
-      duration: 0.8, 
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
       ease: [0.22, 1, 0.36, 1],
-    } 
+    }
   },
-} as const;
+};
 
 export default function AboutPage() {
   return (
@@ -46,7 +46,7 @@ export default function AboutPage() {
               The Studio
             </h1>
           </motion.div>
-          ---
+          
           {/* Main Content Sections */}
           <motion.div
             variants={containerVariants}
@@ -56,7 +56,7 @@ export default function AboutPage() {
           >
             {/* Our Philosophy Section */}
             <motion.div
-              variants={itemVariants as Variants}
+              variants={itemVariants}
               className="grid grid-cols-1 md:grid-cols-2 gap-x-12 mb-20"
             >
               <h2 className="text-3xl font-normal text-black dark:text-white mb-4 md:mb-0">
@@ -69,10 +69,10 @@ export default function AboutPage() {
                 tidak hanya terlihat menakjubkan, tetapi juga berfungsi tanpa cela.
               </p>
             </motion.div>
-            ---
+            
             {/* Our Process Section */}
             <motion.div
-              variants={itemVariants as Variants}
+              variants={itemVariants}
               className="grid grid-cols-1 md:grid-cols-2 gap-x-12 mb-20"
             >
               <h2 className="text-3xl font-normal text-black dark:text-white mb-4 md:mb-0">
@@ -85,14 +85,14 @@ export default function AboutPage() {
                 penyampaian hasil yang melampaui ekspektasi.
               </p>
             </motion.div>
-            ---
+            
             {/* Let's Create Section without a button */}
             <motion.div
-              variants={itemVariants as Variants}
+              variants={itemVariants}
               className="grid grid-cols-1 md:grid-cols-2 gap-x-12"
             >
               <h2 className="text-3xl font-normal text-black dark:text-white mb-4 md:mb-0">
-                Let's Create
+                Let&apos;s Create
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
                 Siap mengubah kehadiran digital Anda? Kami sangat bersemangat tentang apa
