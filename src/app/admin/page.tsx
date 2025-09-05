@@ -6,6 +6,7 @@ import { createClient } from '@supabase/supabase-js';
 import Navbar from '@/components/sections/Navbar';
 import Footer from '@/components/sections/Footer';
 import Image from 'next/image';
+import Link from 'next/link';
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -177,12 +178,12 @@ export default function AdminPage() {
         if (logoRef.current) logoRef.current.value = '';
         if (additionalImagesRef.current) additionalImagesRef.current.value = '';
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error adding work:', error);
       let errorMessage = 'Failed to add work';
-      if (error.message) {
+      if (error instanceof Error) {
         errorMessage = error.message;
-      } else if (error.code === '23505') {
+      } else if (typeof error === 'object' && error !== null && 'code' in error && (error as { code: string }).code === '23505') {
         errorMessage = 'A project with this title already exists';
       }
       setMessage({ type: 'error', text: errorMessage });
@@ -458,18 +459,18 @@ export default function AdminPage() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="mt-8 flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <a
+            <Link
               href="/work"
               className="px-6 py-3 border border-gray-300 dark:border-gray-700 text-black dark:text-white rounded-full font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-center"
             >
               View Work Page
-            </a>
-            <a
+            </Link>
+            <Link
               href="/"
               className="px-6 py-3 border border-gray-300 dark:border-gray-700 text-black dark:text-white rounded-full font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-center"
             >
               Go to Home
-            </a>
+            </Link>
           </motion.div>
         </div>
       </div>

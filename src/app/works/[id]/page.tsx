@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import Navbar from '@/components/sections/Navbar';
 import Footer from '@/components/sections/Footer';
@@ -22,6 +23,15 @@ interface WorkItem {
   imageUrl: string;
   description: string;
   pdf_url: string;
+  clientName: string;
+  clientLogoUrl: string;
+  imageList: string[];
+  team: {
+    webDeveloper: string;
+    uiUxDesigner: string;
+    photographer: string;
+    illustrator: string;
+  };
 }
 
 export default function WorkDetailPage() {
@@ -97,7 +107,7 @@ export default function WorkDetailPage() {
             </svg>
             <h1 className="text-2xl font-medium text-gray-700 dark:text-gray-300 mb-2">Project not found</h1>
             <p className="text-gray-500 dark:text-gray-400 mb-8">
-              The project you're looking for doesn't exist or has been removed.
+              The project you&apos;re looking for doesn&apos;t exist or has been removed.
             </p>
             <Link href="/work" className="px-6 py-3 bg-black text-white dark:bg-white dark:text-black rounded-full font-medium hover:opacity-90 transition-opacity">
               Back to Projects
@@ -156,11 +166,13 @@ export default function WorkDetailPage() {
           className="mb-16"
         >
           <div className="max-w-6xl mx-auto px-4 md:px-8">
-            <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden">
-              <img
+            <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden relative w-full aspect-[16/9]">
+              <Image
                 src={work.imageUrl}
                 alt={work.title}
-                className="w-full h-auto object-cover"
+                fill
+                sizes="(max-width: 768px) 100vw, 700px"
+                className="w-full h-full object-cover"
               />
             </div>
           </div>
@@ -221,7 +233,7 @@ export default function WorkDetailPage() {
               Ready to create something similar?
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-8">
-              Let's collaborate to bring your vision to life with our expertise and creativity.
+              Let&apos;s collaborate to bring your vision to life with our expertise and creativity.
             </p>
             <Link 
               href="/contact" 
@@ -252,10 +264,12 @@ export default function WorkDetailPage() {
                       whileHover={{ y: -5 }}
                       className="group cursor-pointer bg-white dark:bg-black rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg"
                     >
-                      <div className="overflow-hidden bg-gray-100 dark:bg-gray-800 aspect-video">
-                        <img
+                      <div className="overflow-hidden bg-gray-100 dark:bg-gray-800 aspect-video relative">
+                        <Image
                           src={relatedWork.imageUrl}
                           alt={relatedWork.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                       </div>
