@@ -1,13 +1,14 @@
 'use client';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 // Props interface disederhanakan
 interface NavbarProps {
   isLoaded: boolean;
 }
 
+// Data tautan navigasi
 const navLinks = [
   { href: '/services', label: 'Services' },
   { href: '/works', label: 'Work' },
@@ -15,8 +16,12 @@ const navLinks = [
   { href: '/community', label: 'Community' },
 ];
 
-// Komponen untuk setiap tautan navigasi dengan efek "sliding window"
-const NavLink = ({ href, label }: { href: string; label: string; }) => {
+// Komponen reusable untuk tautan dengan efek "sliding window"
+const SlidingLink = ({ href, label, isBold = false }: { href: string; label: string; isBold?: boolean }) => {
+  const textColor = isBold ? 'text-zinc-900' : 'text-zinc-600';
+  const textHoverColor = isBold ? 'text-zinc-900' : 'text-zinc-900';
+  const fontWeight = isBold ? 'font-semibold' : 'font-normal';
+  
   return (
     <Link href={href} className="relative block h-6 overflow-hidden text-sm">
       <motion.div
@@ -24,45 +29,42 @@ const NavLink = ({ href, label }: { href: string; label: string; }) => {
         whileHover={{ y: '-50%' }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
       >
-        <span className="flex h-6 items-center px-3 text-zinc-600">{label}</span>
-        <span className="flex h-6 items-center px-3 font-semibold text-zinc-900">{label}</span>
+        <span className={`flex h-6 items-center px-3 ${fontWeight} ${textColor}`}>{label}</span>
+        <span className={`flex h-6 items-center px-3 ${fontWeight} ${textHoverColor}`}>{label}</span>
       </motion.div>
     </Link>
   );
 };
 
 export default function Navbar({ isLoaded }: NavbarProps) {
-  // State untuk melacak visibilitas navbar dan posisi scroll sebelumnya
+  // State untuk melacak visibilitas navbar
   const [isVisible, setIsVisible] = useState(true);
-  const [prevScrollY, setPrevScrollY] = useState(0);
+  // Ref untuk menyimpan posisi scroll sebelumnya tanpa memicu re-render
+  const prevScrollY = useRef(0);
+
+  // Menggunakan useCallback untuk menghindari recreasi fungsi saat scroll
+  const handleScroll = useCallback(() => {
+    const currentScrollY = window.scrollY;
+    
+    if (currentScrollY > prevScrollY.current && currentScrollY > 100) {
+      setIsVisible(false);
+    } 
+    else if (currentScrollY < prevScrollY.current || currentScrollY < 100) {
+      setIsVisible(true);
+    }
+
+    prevScrollY.current = currentScrollY;
+  }, []);
 
   useEffect(() => {
-    // Fungsi untuk menangani event scroll
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      // Sembunyikan navbar jika menggulir ke bawah dan sudah melewati 100px dari atas
-      if (currentScrollY > prevScrollY && currentScrollY > 100) {
-        setIsVisible(false);
-      } 
-      // Tampilkan navbar jika menggulir ke atas atau sudah kembali ke bagian atas halaman
-      else if (currentScrollY < prevScrollY || currentScrollY < 100) {
-        setIsVisible(true);
-      }
-
-      // Perbarui posisi scroll untuk perbandingan berikutnya
-      setPrevScrollY(currentScrollY);
-    };
-
     // Tambahkan event listener saat komponen dipasang
     window.addEventListener('scroll', handleScroll);
 
-    // Bersihkan event listener saat komponen dilepas untuk menghindari memory leak
+    // Bersihkan event listener saat komponen dilepas
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [prevScrollY]);
+  }, [handleScroll]);
 
-  // Tentukan posisi Y untuk animasi berdasarkan state `isVisible`
-  const yPosition = isVisible ? 0 : -90; // -90px untuk menggerakkan ke atas
+  const yPosition = isVisible ? 0 : -90;
 
   return (
     <header className="relative z-50">
@@ -85,16 +87,14 @@ export default function Navbar({ isLoaded }: NavbarProps) {
           <div className="flex items-center gap-3">
             <span className="text-lg font-bold text-zinc-900">Mulatama Studio.</span>
             <div className="h-4 w-px bg-zinc-300 hidden md:block" />
-            <div className="relative hidden h-6 overflow-hidden md:block">
-              <motion.div
-                className="flex flex-col"
-                whileHover={{ y: '-50%' }}
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
-              >
-                <span className="flex h-6 items-center text-sm text-zinc-500">Creative & Digital Solutions</span>
-                <span className="flex h-6 items-center text-sm font-semibold text-zinc-900">Home</span>
-              </motion.div>
-            </div>
+            
+            {/* Menggunakan SlidingLink yang telah dibuat */}
+            <SlidingLink 
+              href="/" 
+              label="Creative & Digital Solutions" 
+              isBold={false}
+            />
+
           </div>
         </Link>
       </motion.div>
@@ -113,26 +113,19 @@ export default function Navbar({ isLoaded }: NavbarProps) {
         <div className="flex h-12 items-center gap-4 rounded-full border border-zinc-200/80 bg-white/80 p-2 shadow-lg backdrop-blur-md">
           <nav className="hidden items-center gap-2 md:flex">
             {navLinks.map((link) => (
-              <NavLink key={link.href} href={link.href} label={link.label} />
+              <SlidingLink key={link.href} href={link.href} label={link.label} isBold={false} />
             ))}
           </nav>
           
           <div className="h-6 w-px bg-zinc-300/80" />
 
+          {/* Menggunakan SlidingLink yang telah dibuat untuk tombol "Let's Talk" */}
           <div className="pr-2">
-            <Link 
+            <SlidingLink 
               href="/#contact" 
-              className="relative block h-6 overflow-hidden text-sm"
-            >
-              <motion.div
-                className="flex flex-col"
-                whileHover={{ y: '-50%' }}
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
-              >
-                <span className="flex h-6 items-center px-3 font-semibold text-zinc-900">Let's Talk</span>
-                <span className="flex h-6 items-center px-3 font-semibold text-zinc-900">Hi mate</span>
-              </motion.div>
-            </Link>
+              label="Let's Talk" 
+              isBold={true}
+            />
           </div>
         </div>
       </motion.div>
