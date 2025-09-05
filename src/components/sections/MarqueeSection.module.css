@@ -1,0 +1,37 @@
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  -webkit-mask-image: linear-gradient(to right, transparent, white 10%, white 90%, transparent);
+  mask-image: linear-gradient(to right, transparent, white 10%, white 90%, transparent);
+}
+
+.track {
+  display: flex;
+  /* Atur durasi animasi di sini */
+  animation: scroll 40s linear infinite;
+  will-change: transform; /* Optimasi performa */
+}
+
+/* Jeda animasi saat mouse berada di atasnya */
+.marquee:hover .track {
+  animation-play-state: paused;
+}
+
+.logoContainer {
+  flex-shrink: 0;
+  padding: 0 56px; /* mx-14 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Animasi Keyframes */
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
